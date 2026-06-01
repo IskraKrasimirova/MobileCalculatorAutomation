@@ -7,20 +7,11 @@
         [Category("Regression")]
         public void EvaluateMixedExpression(string testedCase, string[] sequence, string expectedResult)
         {
-            calculatorPage.EnterNumber(sequence[0]);
+            calculatorPage.TapClear();
 
-            for (int i = 1; i < sequence.Length; i++)
+            foreach (var element in sequence)
             {
-                var element = sequence[i];
-
-                switch (element)
-                {
-                    case "+": calculatorPage.TapPlus(); break;
-                    case "-": calculatorPage.TapMinus(); break;
-                    case "*": calculatorPage.TapMultiply(); break;
-                    case "/": calculatorPage.TapDivide(); break;
-                    default: calculatorPage.EnterNumber(element); break;
-                }
+                ProcessElement(element);
             }
 
             calculatorPage.TapEquals();
@@ -178,8 +169,105 @@
             yield return new TestCaseData(
                 "Extreme magnitude: 9999999 / 0.000001 - 2 = 9999998999998",
                 new[] { "9999999", "/", "0.000001", "-", "2" }, "9999998999998");
-
         }
 
+        [Test, TestCaseSource(nameof(ParenthesesData))]
+        [Category("Regression")]
+        public void EvaluateExpressionWithParentheses(string testedCase, string[] sequence, string expectedResult)
+        {
+            calculatorPage.TapClear();
+
+            foreach (var element in sequence)
+            {
+                if (element == "(" || element == ")")
+                {
+                    calculatorPage.TapParenthesis();
+                    continue;
+                }
+
+                ProcessElement(element);
+            }
+
+            calculatorPage.TapEquals();
+            var result = calculatorPage.GetCalculationResult();
+
+            Assert.That(result, Is.EqualTo(expectedResult), testedCase);
+        }
+
+        private static IEnumerable<TestCaseData> ParenthesesData()
+        {
+            // BASIC MIXED EXPRESSIONS WITH PARENTHESES
+            yield return new TestCaseData(
+                "Parentheses: (5 + 3) * 2 = 16",
+                new[] { "(", "5", "+", "3", ")", "*", "2" }, "16");
+
+            yield return new TestCaseData(
+                "Parentheses: 500 * (21 + 3) - 4298 = 7702",
+                new[] { "500", "*", "(", "21", "+", "3", ")", "-", "4298" }, "7702");
+
+            // DECIMALS WITH DIFFERENT PRECISION
+            yield return new TestCaseData(
+                "Parentheses: (1.22223 + 3.4) * 8.001 = 36.98246223",
+                new[] { "(", "1.22223", "+", "3.4", ")", "*", "8.001" }, "36.98246223");
+
+            yield return new TestCaseData(
+                "Parentheses: (0.75 + 1.3333) / 2 = 1.04165",
+                new[] { "(", "0.75", "+", "1.3333", ")", "/", "2" }, "1.04165");
+
+            // NEGATIVE NUMBERS
+            yield return new TestCaseData(
+                "Parentheses: (-5 + 32) * 2.000 = 54",
+                new[] { "(", "-5", "+", "32", ")", "*", "2.000" }, "54");
+
+            // TINY DECIMALS
+            yield return new TestCaseData(
+                "Parentheses: (0.0001 + 0.0002) * 3 = 0.0009",
+                new[] { "(", "0.0001", "+", "0.0002", ")", "*", "3" }, "0.0009");
+
+            // LONG PRECISION
+            yield return new TestCaseData(
+                "Parentheses: (1.000000001 + 0.000000009) * 2 = 2.00000002",
+                new[] { "(", "1.000000001", "+", "0.000000009", ")", "*", "2" }, "2.00000002");
+
+            // EXTREME MAGNITUDE
+            yield return new TestCaseData(
+                "Parentheses: (1000000 * 0.000001) + 2 = 3",
+                new[] { "(", "1000000", "*", "0.000001", ")", "+", "2" }, "3");
+
+            // STRESS TESTS
+            yield return new TestCaseData(
+                "Parentheses STRESS: (2 + 3) * 4 - 6 / (2 + 1.5 * 2) = 18.8",
+                new[] { "(", "2", "+", "3", ")", "*", "4", "-", "6", "/", "(", "2", "+", "1.5", "*", "2", ")" }, "18.8");
+
+            yield return new TestCaseData(
+                "Parentheses STRESS: 10 * (2 + 3) / (5 + 4) * 1.5 - 2 = 6.3333333333333",
+                new[] { "10", "*", "(", "2", "+", "3", ")", "/", "(", "5", "+", "4", ")", "*", "1.5", "-", "2" }, "6.3333333333333");
+
+            yield return new TestCaseData(
+                "Parentheses STRESS: (0.5 + 1.25) * 3.5 / 0.7 - 12.12345 = -3.37345",
+                new[] { "(", "0.5", "+", "1.25", ")", "*", "3.5", "/", "0.7", "-", "12.12345" }, "-3.37345");
+        }
+
+        private void ProcessElement(string element)
+        {
+            switch (element)
+            {
+                case "+":
+                    calculatorPage.TapPlus();
+                    break;
+                case "-":
+                    calculatorPage.TapMinus();
+                    break;
+                case "*":
+                    calculatorPage.TapMultiply();
+                    break;
+                case "/":
+                    calculatorPage.TapDivide();
+                    break;
+                default:
+                    calculatorPage.EnterNumber(element);
+                    break;
+            }
+        }
     }
 }
