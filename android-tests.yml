@@ -1,0 +1,86 @@
+name: Android UI Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  ui-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Install Appium
+        run: |
+          npm install -g appium
+          appium -v
+
+      - name: Install UiAutomator2 driver
+        run: |
+          appium driver install uiautomator2
+
+      - name: Start Appium server
+        run: |
+          nohup appium > appium.log 2>&1 &
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Create and start Android 13 (API 33) Pixel 7 emulator
+        run: |
+          sdkmanager "system-images;android-33;google_apis;x86_64"
+          avdmanager create avd -n pixel7 -k "system-images;android-33;google_apis;x86_64" --device "pixel_7"
+          nohup emulator -avd pixel7 -no-snapshot -noaudio -no-window > emulator.log 2>&1 &
+          adb wait-for-device
+          adb shell input keyevent 82
+
+      - name: Start logcat
+        run: |
+            nohup adb logcat > logcat.log 2>&1 &
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build tests
+        run: dotnet build --configuration Release
+
+      - name: Run tests
+        run: dotnet test --configuration Release --no-build
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: Screenshots/
+
+      - name: Upload Appium logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: appium-log
+          path: appium.log
+
+      - name: Upload emulator logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: logcat
+          path: logcat.log
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: test-results.xml
