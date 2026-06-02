@@ -9,5 +9,6 @@
         public string AppPackage { get; set; } = default!;
         public string AppActivity { get; set; } = default!;
         public string ServerUrl { get; set; } = default!;
+        public bool NoReset { get; set; }
     }
 }

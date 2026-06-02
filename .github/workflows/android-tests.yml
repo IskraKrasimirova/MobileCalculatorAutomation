@@ -42,6 +42,7 @@ jobs:
             nohup adb logcat > logcat.log 2>&1 &
             nohup appium > appium.log 2>&1 &
             sleep 5
+            adb shell cmd package install-existing com.google.android.calculator || true
             dotnet restore
             dotnet build --configuration Release
             dotnet test --configuration Release --no-build --logger "trx;LogFileName=test-results.xml"

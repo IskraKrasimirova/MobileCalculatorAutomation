@@ -18,6 +18,7 @@ namespace MobileUITests.Drivers
 
             options.AddAdditionalAppiumOption("appPackage", settings.AppPackage);
             options.AddAdditionalAppiumOption("appActivity", settings.AppActivity);
+            options.AddAdditionalAppiumOption("noReset", settings.NoReset);
 
             options.AddAdditionalAppiumOption("settings[waitForIdleTimeout]", 0);
             options.AddAdditionalAppiumOption("settings[ignoreUnimportantViews]", true);
