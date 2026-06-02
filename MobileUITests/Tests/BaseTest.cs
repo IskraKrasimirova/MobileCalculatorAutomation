@@ -2,6 +2,7 @@
 using MobileUITests.Models;
 using MobileUITests.Pages;
 using MobileUITests.Utils;
+using NUnit.Framework.Interfaces;
 using OpenQA.Selenium.Appium.Android;
 using System.Diagnostics;
 
@@ -37,6 +38,30 @@ namespace MobileUITests.Tests
             calculatorPage = new CalculatorPage(driver);
             // Ensure calculator is in a clean state before each test
             calculatorPage.TapClear(); 
+        }
+
+        [TearDown]
+        public void TearDown()
+        {
+            if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
+            {
+                try
+                {
+                    Directory.CreateDirectory("Screenshots");
+
+                    var screenshot = driver.GetScreenshot();
+                    var filePath = $"Screenshots/{TestContext.CurrentContext.Test.Name}.png";
+
+                    screenshot.SaveAsFile(filePath);
+
+                    TestContext.AddTestAttachment(filePath, "Screenshot on failure");
+                    TestContext.Out.WriteLine($"Screenshot saved: {filePath}");
+                }
+                catch (Exception ex)
+                {
+                    TestContext.Out.WriteLine($"Failed to capture screenshot: {ex.Message}");
+                }
+            }
         }
 
         [OneTimeTearDown]
