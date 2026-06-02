@@ -36,7 +36,7 @@ jobs:
           target: google_apis_playstore
           arch: x86_64
           profile: pixel_7
-          emulator-options: -no-snapshot -noaudio -no-window -no-boot-anim
+          emulator-options: -no-snapshot -noaudio -no-window -no-boot-anim -gpu swiftshader_indirect
           disable-animations: true
           script: |
             # Start logcat
