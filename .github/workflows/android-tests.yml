@@ -47,7 +47,6 @@ jobs:
             sleep 5
 
             # Install Google Calculator APK
-            ls -R .
             adb install MobileUITests/Apks/calculator.apk
 
             # .NET build + test

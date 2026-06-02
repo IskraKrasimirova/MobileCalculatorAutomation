@@ -17,6 +17,8 @@ namespace MobileUITests.Tests
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
+            Directory.CreateDirectory("Screenshots");
+
             // Load settings from appsettings.json
             settings = ConfigReader.GetAppiumSettings();
 
@@ -27,17 +29,30 @@ namespace MobileUITests.Tests
 
             // Start driver ONCE
             driver = AppiumDriverFactory.CreateAndroidDriver();
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
         }
 
         [SetUp]
         public void SetUp()
         {
-            //Activate app before each test
-            driver.ActivateApp(settings.AppPackage);
+            try
+            {
+                //Activate app before each test
+                driver.ActivateApp(settings.AppPackage);
 
-            calculatorPage = new CalculatorPage(driver);
-            // Ensure calculator is in a clean state before each test
-            calculatorPage.TapClear(); 
+                calculatorPage = new CalculatorPage(driver);
+                // Ensure calculator is in a clean state before each test
+                calculatorPage.TapClear();
+            }
+            catch (Exception)
+            {
+                var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                var screenshot = driver.GetScreenshot();
+                var filePath = $"Screenshots/SetupFailure_BeforeTest_{TestContext.CurrentContext.Test.Name}_{timestamp}.png";
+                screenshot.SaveAsFile(filePath);
+
+                throw;
+            }
         }
 
         [TearDown]
@@ -49,8 +64,9 @@ namespace MobileUITests.Tests
                 {
                     Directory.CreateDirectory("Screenshots");
 
+                    var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
                     var screenshot = driver.GetScreenshot();
-                    var filePath = $"Screenshots/{TestContext.CurrentContext.Test.Name}.png";
+                    var filePath = $"Screenshots/{TestContext.CurrentContext.Test.Name}_{timestamp}.png";
 
                     screenshot.SaveAsFile(filePath);
 
