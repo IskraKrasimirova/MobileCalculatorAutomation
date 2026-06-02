@@ -1,5 +1,8 @@
 ﻿# MobileCalculatorAutomation
 
+![Android Tests](https://github.com/iskrakrasimirova/MobileCalculatorAutomation/actions/workflows/android-tests.yml/badge.svg)
+
+
 **MobileCalculatorAutomation** is a mobile UI automation project built with **C#**, **.NET 8**, and **Appium**, designed to automate an Android Calculator application.  
 The project follows the **Page Object Model (POM)** pattern and is structured for future expansion to iOS.
 

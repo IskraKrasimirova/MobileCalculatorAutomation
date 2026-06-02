@@ -8,7 +8,7 @@ using System.Diagnostics;
 
 namespace MobileUITests.Tests
 {
-    public class BaseTest
+    public abstract class BaseTest
     {
         protected AndroidDriver driver;
         protected CalculatorPage calculatorPage;
@@ -44,13 +44,9 @@ namespace MobileUITests.Tests
                 // Ensure calculator is in a clean state before each test
                 calculatorPage.TapClear();
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                var screenshot = driver.GetScreenshot();
-                var filePath = $"Screenshots/SetupFailure_BeforeTest_{TestContext.CurrentContext.Test.Name}_{timestamp}.png";
-                screenshot.SaveAsFile(filePath);
-
+                TestContext.Out.WriteLine($"SetUp failed: {ex.Message}");
                 throw;
             }
         }
@@ -62,8 +58,6 @@ namespace MobileUITests.Tests
             {
                 try
                 {
-                    Directory.CreateDirectory("Screenshots");
-
                     var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
                     var screenshot = driver.GetScreenshot();
                     var filePath = $"Screenshots/{TestContext.CurrentContext.Test.Name}_{timestamp}.png";

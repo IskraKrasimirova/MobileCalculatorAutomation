@@ -2,7 +2,7 @@
 
 namespace MobileUITests.Pages
 {
-    public class BasePage
+    public abstract class BasePage
     {
         protected AndroidDriver _driver;
 
