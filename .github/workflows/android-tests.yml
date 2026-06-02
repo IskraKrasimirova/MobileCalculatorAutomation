@@ -37,16 +37,16 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Create and start Android 13 (API 33) Pixel 7 emulator
+        timeout-minutes: 10
         run: |
           sdkmanager "system-images;android-33;google_apis;x86_64"
           avdmanager create avd -n pixel7 -k "system-images;android-33;google_apis;x86_64" --device "pixel_7"
-          nohup emulator -avd pixel7 -no-snapshot -noaudio -no-window > emulator.log 2>&1 &
-          adb wait-for-device
-          echo "Waiting for emulator to fully boot..."
-          timeout 300 adb shell /bin/sh -c \
-            'while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 5; done'
-          sleep 10
+          nohup emulator -avd pixel7 -no-snapshot -noaudio -no-window -no-boot-anim > emulator.log 2>&1 &
+          adb wait-for-device shell 'while [ "$(getprop sys.boot_completed 2>/dev/null)" != "1" ]; do sleep 3; echo "Still booting..."; done; echo "Boot complete!"'
+    
+          sleep 5
           adb shell input keyevent 82
+          echo "Emulator ready!"
 
       - name: Start logcat
         run: |
