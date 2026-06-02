@@ -36,10 +36,10 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Create and start Android 15 (API 35) Pixel 7 emulator
+      - name: Create and start Android 13 (API 33) Pixel 7 emulator
         run: |
-          sdkmanager "system-images;android-35;google_apis;x86_64"
-          avdmanager create avd -n pixel7 -k "system-images;android-35;google_apis;x86_64" --device "pixel_7"
+          sdkmanager "system-images;android-33;google_apis;x86_64"
+          avdmanager create avd -n pixel7 -k "system-images;android-33;google_apis;x86_64" --device "pixel_7"
           nohup emulator -avd pixel7 -no-snapshot -noaudio -no-window > emulator.log 2>&1 &
           adb wait-for-device
           adb shell input keyevent 82
