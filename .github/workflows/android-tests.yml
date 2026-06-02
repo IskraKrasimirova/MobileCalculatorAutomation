@@ -39,15 +39,26 @@ jobs:
           emulator-options: -no-snapshot -noaudio -no-window -no-boot-anim
           disable-animations: true
           script: |
+            # Start logcat
             nohup adb logcat > logcat.log 2>&1 &
+
+            # Start Appium
             nohup appium > appium.log 2>&1 &
             sleep 5
-            adb shell cmd package install-existing com.google.android.calculator || true
-            echo "=== Calculator activities ==="
-            adb shell pm dump com.google.android.calculator | grep -A 2 "Activity"
+
+            # Install Google Calculator APK
+            ls -R .
+            adb install MobileUITests/Apks/calculator.apk
+
+            # .NET build + test
             dotnet restore
             dotnet build --configuration Release
             dotnet test --configuration Release --no-build --logger "trx;LogFileName=test-results.xml"
+        env:
+          APPIUM__AppPackage: com.google.android.calculator
+          APPIUM__AppActivity: com.android.calculator2.Calculator
+          APPIUM__DeviceName: emulator-5554
+          APPIUM__PlatformVersion: "15"
 
       - name: Upload screenshots
         if: always()
