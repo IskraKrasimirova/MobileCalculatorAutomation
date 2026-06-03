@@ -44,13 +44,7 @@ namespace MobileUITests.Tests
             _test = _extent.CreateTest(TestContext.CurrentContext.Test.Name);
 
             // Add NUnit categories to ExtentReports
-            var categories = TestContext.CurrentContext.Test.Properties["Category"];
-
-            foreach (var category in categories)
-            {
-                _test.AssignCategory(category.ToString());
-                _test.Info($"Category: {category}");
-            }
+            AddCategoriesToReport();
 
             try
             {
@@ -120,6 +114,51 @@ namespace MobileUITests.Tests
             process.StartInfo.UseShellExecute = false;
             process.Start();
             process.WaitForExit();
+        }
+
+        private void AddCategoriesToReport()
+        {
+            var allCategories = new HashSet<string>();
+
+            // 1) Categories from class
+            var classCategories = GetType()
+                .GetCustomAttributes(typeof(CategoryAttribute), true)
+                .Cast<CategoryAttribute>()
+                .Select(c => c.Name);
+
+            allCategories.UnionWith(classCategories);
+
+            // 2) Categories from method
+            var methodName = TestContext.CurrentContext.Test.MethodName;
+            var method = methodName != null ? GetType().GetMethod(methodName) : null;
+
+            if (method != null)
+            {
+                var methodCategories = method
+                    .GetCustomAttributes(typeof(CategoryAttribute), true)
+                    .Cast<CategoryAttribute>()
+                    .Select(c => c.Name);
+
+                allCategories.UnionWith(methodCategories);
+            }
+
+            // 3) Categories from NUnit (TestCaseData)
+            var nunitCategories = TestContext.CurrentContext.Test.Properties["Category"]
+                .Cast<object>()
+                .Select(c => c?.ToString())
+                .Where(c => c is not null)!;
+
+            allCategories.UnionWith(nunitCategories!);
+
+
+            // Add to ExtentReports
+            foreach (var category in allCategories)
+            {
+                _test.AssignCategory(category);
+                _test.Info($"Category: {category}");
+            }
+
+            _test.Info($"Found {allCategories.Count} categories");
         }
     }
 }

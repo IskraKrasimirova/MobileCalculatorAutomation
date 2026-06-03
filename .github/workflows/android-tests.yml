@@ -89,12 +89,6 @@ jobs:
           name: test-results
           path: "**/TestResults/test-results.xml"
 
-      - name: Ensure Extent Report exists
-        if: always()
-        run: |
-          mkdir -p MobileUITests/bin/Release/net8.0/Reports
-          touch MobileUITests/bin/Release/net8.0/Reports/TestReport.html
-
       - name: Upload Extent Report
         if: always()
         uses: actions/upload-artifact@v4
