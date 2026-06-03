@@ -25,7 +25,8 @@ The project follows the **Page Object Model (POM)** pattern and is structured fo
 MobileAutomation/
 │
 ├── MobileUITests/
-│   ├── Drivers/          # Appium driver factory and driver setup
+│   ├── Apks/			  # Local APK files used by the emulator (e.g., calculator.apk)
+	├── Drivers/          # Appium driver factory and driver setup
 │   ├── Models/           # AppiumSettings and configuration models
 │   ├── Pages/            # Page Object classes (BasePage, CalculatorPage)
 │   ├── Tests/            # NUnit test classes for calculator operations
@@ -88,7 +89,6 @@ dotnet test
 - Add iOS automation  
 - Create unified driver layer for Android + iOS  
 - Integrate Allure or ExtentReports  
-- Add GitHub Actions CI pipeline  
 
 ---
 

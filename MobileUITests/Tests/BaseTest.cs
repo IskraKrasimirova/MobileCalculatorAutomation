@@ -1,4 +1,5 @@
-﻿using MobileUITests.Drivers;
+﻿using AventStack.ExtentReports;
+using MobileUITests.Drivers;
 using MobileUITests.Models;
 using MobileUITests.Pages;
 using MobileUITests.Utils;
@@ -13,11 +14,14 @@ namespace MobileUITests.Tests
         protected AndroidDriver driver;
         protected CalculatorPage calculatorPage;
         protected AppiumSettings settings;
+        protected ExtentReports extent;
+        protected ExtentTest test;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
             Directory.CreateDirectory("Screenshots");
+            Directory.CreateDirectory("Reports");
 
             // Load settings from appsettings.json
             settings = ConfigReader.GetAppiumSettings();
@@ -30,11 +34,23 @@ namespace MobileUITests.Tests
             // Start driver ONCE
             driver = AppiumDriverFactory.CreateAndroidDriver();
             driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
+
+            extent = ReportManager.GetReporter();
         }
 
         [SetUp]
         public void SetUp()
         {
+            test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
+
+            // Add NUnit categories to ExtentReports
+            var categories = TestContext.CurrentContext.Test.Properties["Category"];
+
+            foreach (var category in categories)
+            {
+                test.AssignCategory(category.ToString());
+            }
+
             try
             {
                 //Activate app before each test
@@ -54,7 +70,9 @@ namespace MobileUITests.Tests
         [TearDown]
         public void TearDown()
         {
-            if (TestContext.CurrentContext.Result.Outcome.Status == TestStatus.Failed)
+            var status = TestContext.CurrentContext.Result.Outcome.Status;
+
+            if (status == TestStatus.Failed)
             {
                 try
                 {
@@ -66,17 +84,25 @@ namespace MobileUITests.Tests
 
                     TestContext.AddTestAttachment(filePath, "Screenshot on failure");
                     TestContext.Out.WriteLine($"Screenshot saved: {filePath}");
+
+                    test.Fail("Test failed").AddScreenCaptureFromPath(filePath);
                 }
                 catch (Exception ex)
                 {
                     TestContext.Out.WriteLine($"Failed to capture screenshot: {ex.Message}");
                 }
             }
+            else if (status == TestStatus.Passed)
+            {
+                test.Pass("Test passed");
+            }
         }
 
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
+            extent.Flush();
+
             if (driver != null)
             {
                 driver.Quit();
