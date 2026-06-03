@@ -92,12 +92,12 @@ jobs:
       - name: Ensure Extent Report exists
         if: always()
         run: |
-          mkdir -p MobileUITests/Reports
-          touch MobileUITests/Reports/TestReport.html
+          mkdir -p MobileUITests/bin/Release/net8.0/Reports
+          touch MobileUITests/bin/Release/net8.0/Reports/TestReport.html
 
       - name: Upload Extent Report
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: extent-report
-          path: MobileUITests/Reports/
+          path: MobileUITests/bin/Release/net8.0/Reports/

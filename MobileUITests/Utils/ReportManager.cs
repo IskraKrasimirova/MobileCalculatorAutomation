@@ -11,9 +11,11 @@ namespace MobileUITests.Utils
         {
             if (_extent == null)
             {
-                Directory.CreateDirectory("Reports");
+                var reportDir = Path.Combine(AppContext.BaseDirectory, "Reports");
+                Directory.CreateDirectory(reportDir);
 
-                var spark = new ExtentSparkReporter("Reports/TestReport.html");
+                var reportPath = Path.Combine(reportDir, "TestReport.html");
+                var spark = new ExtentSparkReporter(reportPath);
 
                 _extent = new ExtentReports();
                 _extent.AttachReporter(spark);

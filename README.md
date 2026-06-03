@@ -84,11 +84,24 @@ dotnet test
 
 ---
 
+## 📊 Test Report (ExtentReports)
+
+The framework generates an HTML test report using ExtentReports v5 after each test run.
+
+- Includes test status, categories, logs, and screenshots on failure  
+- Automatically uploaded as an artifact in GitHub Actions  
+- Local path when running tests locally:	
+
+  MobileUITests/bin/Release/net8.0/Reports/TestReport.html
+
+Open the file in any browser to view the full report.
+
+---
+
 ## 📌 Planned Improvements
 
 - Add iOS automation  
-- Create unified driver layer for Android + iOS  
-- Integrate Allure or ExtentReports  
+- Create unified driver layer for Android + iOS
 
 ---
 
