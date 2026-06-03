@@ -33,7 +33,7 @@ namespace MobileUITests.Tests
 
             // Start driver ONCE
             _driver = AppiumDriverFactory.CreateAndroidDriver();
-            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
+            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
 
             _extent = ReportManager.GetReporter(_settings);
         }

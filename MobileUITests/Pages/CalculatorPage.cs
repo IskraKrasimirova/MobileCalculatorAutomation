@@ -6,7 +6,6 @@ namespace MobileUITests.Pages
 {
     public class CalculatorPage : BasePage
     {
-        //private AppiumElement DigitButton(int digit) => _driver.FindElement(MobileBy.Id($"com.google.android.calculator:id/digit_{digit}"));
         private AppiumElement DigitButton(int digit) => _driver.FindElement(MobileBy.AccessibilityId($"{digit}"));
 
         private AppiumElement PlusButton => _driver.FindElement(MobileBy.AccessibilityId("plus"));
@@ -79,28 +78,6 @@ namespace MobileUITests.Pages
                 else if (c == '.') TapDot();
                 else TapDigit(int.Parse(c.ToString()));
             }
-
-            // Handle negative numbers by tapping "0 -" first, then entering the digits
-            // This is necessary because the calculator app may not allow directly entering a negative sign before digits
-            // Example: to enter "-5", we tap "0", then "-", then "5"
-            //if (number.StartsWith('-'))
-            //{
-            //    // Enter 0 -
-            //    TapDigit(0);
-            //    TapMinus();
-
-            //    // Remove the leading minus
-            //    number = number.Substring(1);
-            //}
-
-            //// Common logic for entering digits and decimal points
-            //foreach (char c in number)
-            //{
-            //    if (c == '.')
-            //        TapDot();
-            //    else
-            //        TapDigit(int.Parse(c.ToString()));
-            //}
         }
 
         public string GetErrorMessage() => ErrorMessageField.Text;
