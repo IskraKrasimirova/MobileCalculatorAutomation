@@ -155,10 +155,9 @@ namespace MobileUITests.Tests
             foreach (var category in allCategories)
             {
                 _test.AssignCategory(category);
-                _test.Info($"Category: {category}");
             }
 
-            _test.Info($"Found {allCategories.Count} categories");
+            _test.Info($"Categories: {string.Join(", ", allCategories)}");
         }
     }
 }
