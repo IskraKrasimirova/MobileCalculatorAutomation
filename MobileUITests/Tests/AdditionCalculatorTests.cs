@@ -7,12 +7,12 @@
         [Category("Smoke")]
         public void AdditionOfTwoNumbers(string testedCase, string number1, string number2, string expectedResult)
         {
-            calculatorPage.EnterNumber(number1);
-            calculatorPage.TapPlus();
-            calculatorPage.EnterNumber(number2);
-            calculatorPage.TapEquals();
+            _calculatorPage.EnterNumber(number1);
+            _calculatorPage.TapPlus();
+            _calculatorPage.EnterNumber(number2);
+            _calculatorPage.TapEquals();
 
-            var result = calculatorPage.GetCalculationResult();
+            var result = _calculatorPage.GetCalculationResult();
 
             Assert.That(result, Is.EqualTo(expectedResult));
         }
@@ -46,7 +46,7 @@
             // Case 1: Empty array
             if (addends.Length == 0)
             {
-                var result = calculatorPage.GetCalculationResult();
+                var result = _calculatorPage.GetCalculationResult();
 
                 Assert.That(result, Is.EqualTo(expectedResult), testedCase);
 
@@ -56,9 +56,9 @@
             // Case 2: Single element
             if (addends.Length == 1)
             {
-                calculatorPage.EnterNumber(addends[0]);
-                calculatorPage.TapEquals();
-                var result = calculatorPage.GetCalculationResult();    
+                _calculatorPage.EnterNumber(addends[0]);
+                _calculatorPage.TapEquals();
+                var result = _calculatorPage.GetCalculationResult();    
 
                 Assert.That(result, Is.EqualTo(expectedResult), testedCase);
 
@@ -66,16 +66,16 @@
             }
 
             // Case 3: Normal multi-addend logic
-            calculatorPage.EnterNumber(addends[0]);
+            _calculatorPage.EnterNumber(addends[0]);
 
             for (int i = 1; i < addends.Length; i++)
             {
-                calculatorPage.TapPlus();
-                calculatorPage.EnterNumber(addends[i]);
+                _calculatorPage.TapPlus();
+                _calculatorPage.EnterNumber(addends[i]);
             }
 
-            calculatorPage.TapEquals();
-            var finalResult = calculatorPage.GetCalculationResult();
+            _calculatorPage.TapEquals();
+            var finalResult = _calculatorPage.GetCalculationResult();
 
             Assert.That(finalResult, Is.EqualTo(expectedResult), testedCase);
         }

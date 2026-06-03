@@ -1,6 +1,4 @@
-﻿using Microsoft.VisualStudio.TestPlatform.ObjectModel;
-
-namespace MobileUITests.Tests
+﻿namespace MobileUITests.Tests
 {
     [Category("DivisionTests")]
     public class DivisionCalculatorTests : BaseTest
@@ -9,12 +7,12 @@ namespace MobileUITests.Tests
         [Category("Smoke")]
         public void DivisionOfTwoNumbers(string testedCase, string number1, string number2, string expectedResult)
         {
-            calculatorPage.EnterNumber(number1);
-            calculatorPage.TapDivide();
-            calculatorPage.EnterNumber(number2);
-            calculatorPage.TapEquals();
+            _calculatorPage.EnterNumber(number1);
+            _calculatorPage.TapDivide();
+            _calculatorPage.EnterNumber(number2);
+            _calculatorPage.TapEquals();
 
-            var result = calculatorPage.GetCalculationResult();
+            var result = _calculatorPage.GetCalculationResult();
 
             Assert.That(result, Is.EqualTo(expectedResult), testedCase);
         }
@@ -67,16 +65,16 @@ namespace MobileUITests.Tests
         [Category("Regression")]
         public void DivisionByZero_ShowsErrorMessage(string testedCase, string number)
         {
-            calculatorPage.EnterNumber(number);
-            calculatorPage.TapDivide();
-            calculatorPage.EnterNumber("0");
-            calculatorPage.TapEquals();
+            _calculatorPage.EnterNumber(number);
+            _calculatorPage.TapDivide();
+            _calculatorPage.EnterNumber("0");
+            _calculatorPage.TapEquals();
 
-            var result = calculatorPage.GetCalculationResult();
+            var result = _calculatorPage.GetCalculationResult();
 
             Assert.That(result, Is.EqualTo($"{number}÷0"), testedCase);
 
-            var error = calculatorPage.GetErrorMessage();
+            var error = _calculatorPage.GetErrorMessage();
 
             Assert.That(error, Is.EqualTo("Can't divide by 0"));
         }
@@ -96,7 +94,7 @@ namespace MobileUITests.Tests
             // Case 1: Empty array
             if (numbers.Length == 0)
             {
-                var result = calculatorPage.GetCalculationResult();
+                var result = _calculatorPage.GetCalculationResult();
                 Assert.That(result, Is.EqualTo(expectedResult), testedCase);
                 return;
             }
@@ -104,24 +102,24 @@ namespace MobileUITests.Tests
             // Case 2: Single element
             if (numbers.Length == 1)
             {
-                calculatorPage.EnterNumber(numbers[0]);
-                calculatorPage.TapEquals();
-                var result = calculatorPage.GetCalculationResult();
+                _calculatorPage.EnterNumber(numbers[0]);
+                _calculatorPage.TapEquals();
+                var result = _calculatorPage.GetCalculationResult();
                 Assert.That(result, Is.EqualTo(expectedResult), testedCase);
                 return;
             }
 
             // Case 3: Normal multi-division logic
-            calculatorPage.EnterNumber(numbers[0]);
+            _calculatorPage.EnterNumber(numbers[0]);
 
             for (int i = 1; i < numbers.Length; i++)
             {
-                calculatorPage.TapDivide();
-                calculatorPage.EnterNumber(numbers[i]);
+                _calculatorPage.TapDivide();
+                _calculatorPage.EnterNumber(numbers[i]);
             }
 
-            calculatorPage.TapEquals();
-            var finalResult = calculatorPage.GetCalculationResult();
+            _calculatorPage.TapEquals();
+            var finalResult = _calculatorPage.GetCalculationResult();
 
             Assert.That(finalResult, Is.EqualTo(expectedResult), testedCase);
         }
@@ -186,20 +184,20 @@ namespace MobileUITests.Tests
         [Category("Regression")]
         public void DivisionOfMultipleNumbers_ByZero_ShowsError(string testedCase, string[] numbers)
         {
-            calculatorPage.EnterNumber(numbers[0]);
+            _calculatorPage.EnterNumber(numbers[0]);
 
             for (int i = 1; i < numbers.Length; i++)
             {
-                calculatorPage.TapDivide();
-                calculatorPage.EnterNumber(numbers[i]);
+                _calculatorPage.TapDivide();
+                _calculatorPage.EnterNumber(numbers[i]);
             }
 
-            calculatorPage.TapEquals();
+            _calculatorPage.TapEquals();
 
-            var result = calculatorPage.GetCalculationResult();
+            var result = _calculatorPage.GetCalculationResult();
             Assert.That(result, Is.EqualTo(string.Join("÷", numbers)));
 
-            var error = calculatorPage.GetErrorMessage();
+            var error = _calculatorPage.GetErrorMessage();
             Assert.That(error, Is.EqualTo("Can't divide by 0"));
         }
 

@@ -7,12 +7,12 @@
         [Category("Smoke")]
         public void SubtractionOfTwoNumbers(string testedCase, string number1, string number2, string expectedResult)
         {
-            calculatorPage.EnterNumber(number1);
-            calculatorPage.TapMinus();
-            calculatorPage.EnterNumber(number2);
-            calculatorPage.TapEquals();
+            _calculatorPage.EnterNumber(number1);
+            _calculatorPage.TapMinus();
+            _calculatorPage.EnterNumber(number2);
+            _calculatorPage.TapEquals();
 
-            var result = calculatorPage.GetCalculationResult();
+            var result = _calculatorPage.GetCalculationResult();
 
             Assert.That(result, Is.EqualTo(expectedResult), testedCase);
         }
@@ -64,7 +64,7 @@
             // Case 1: Empty array
             if (numbers.Length == 0)
             {
-                var result = calculatorPage.GetCalculationResult();
+                var result = _calculatorPage.GetCalculationResult();
                 Assert.That(result, Is.EqualTo(expectedResult), testedCase);
                 return;
             }
@@ -72,24 +72,24 @@
             // Case 2: Single element
             if (numbers.Length == 1)
             {
-                calculatorPage.EnterNumber(numbers[0]);
-                calculatorPage.TapEquals();
-                var result = calculatorPage.GetCalculationResult();
+                _calculatorPage.EnterNumber(numbers[0]);
+                _calculatorPage.TapEquals();
+                var result = _calculatorPage.GetCalculationResult();
                 Assert.That(result, Is.EqualTo(expectedResult), testedCase);
                 return;
             }
 
             // Case 3: Normal multi-subtraction logic
-            calculatorPage.EnterNumber(numbers[0]);
+            _calculatorPage.EnterNumber(numbers[0]);
 
             for (int i = 1; i < numbers.Length; i++)
             {
-                calculatorPage.TapMinus();
-                calculatorPage.EnterNumber(numbers[i]);
+                _calculatorPage.TapMinus();
+                _calculatorPage.EnterNumber(numbers[i]);
             }
 
-            calculatorPage.TapEquals();
-            var finalResult = calculatorPage.GetCalculationResult();
+            _calculatorPage.TapEquals();
+            var finalResult = _calculatorPage.GetCalculationResult();
 
             Assert.That(finalResult, Is.EqualTo(expectedResult), testedCase);
         }

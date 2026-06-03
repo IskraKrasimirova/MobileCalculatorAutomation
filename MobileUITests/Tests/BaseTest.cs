@@ -11,11 +11,11 @@ namespace MobileUITests.Tests
 {
     public abstract class BaseTest
     {
-        protected AndroidDriver driver;
-        protected CalculatorPage calculatorPage;
-        protected AppiumSettings settings;
-        protected ExtentReports extent;
-        protected ExtentTest test;
+        protected AndroidDriver _driver;
+        protected CalculatorPage _calculatorPage;
+        protected AppiumSettings _settings;
+        protected ExtentReports _extent;
+        protected ExtentTest _test;
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
@@ -24,7 +24,7 @@ namespace MobileUITests.Tests
             Directory.CreateDirectory("Reports");
 
             // Load settings from appsettings.json
-            settings = ConfigReader.GetAppiumSettings();
+            _settings = ConfigReader.GetAppiumSettings();
 
             // Disable animations (only once)
             RunAdb("shell settings put global window_animation_scale 0");
@@ -32,34 +32,34 @@ namespace MobileUITests.Tests
             RunAdb("shell settings put global animator_duration_scale 0");
 
             // Start driver ONCE
-            driver = AppiumDriverFactory.CreateAndroidDriver();
-            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
+            _driver = AppiumDriverFactory.CreateAndroidDriver();
+            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(1);
 
-            extent = ReportManager.GetReporter();
+            _extent = ReportManager.GetReporter(_settings);
         }
 
         [SetUp]
         public void SetUp()
         {
-            test = extent.CreateTest(TestContext.CurrentContext.Test.Name);
+            _test = _extent.CreateTest(TestContext.CurrentContext.Test.Name);
 
             // Add NUnit categories to ExtentReports
             var categories = TestContext.CurrentContext.Test.Properties["Category"];
 
             foreach (var category in categories)
             {
-                test.AssignCategory(category.ToString());
-                test.AssignAuthor(category.ToString());
+                _test.AssignCategory(category.ToString());
+                _test.Info($"Category: {category}");
             }
 
             try
             {
                 //Activate app before each test
-                driver.ActivateApp(settings.AppPackage);
+                _driver.ActivateApp(_settings.AppPackage);
 
-                calculatorPage = new CalculatorPage(driver);
+                _calculatorPage = new CalculatorPage(_driver);
                 // Ensure calculator is in a clean state before each test
-                calculatorPage.TapClear();
+                _calculatorPage.TapClear();
             }
             catch (Exception ex)
             {
@@ -78,7 +78,7 @@ namespace MobileUITests.Tests
                 try
                 {
                     var timestamp = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-                    var screenshot = driver.GetScreenshot();
+                    var screenshot = _driver.GetScreenshot();
                     var filePath = $"Screenshots/{TestContext.CurrentContext.Test.Name}_{timestamp}.png";
 
                     screenshot.SaveAsFile(filePath);
@@ -86,7 +86,7 @@ namespace MobileUITests.Tests
                     TestContext.AddTestAttachment(filePath, "Screenshot on failure");
                     TestContext.Out.WriteLine($"Screenshot saved: {filePath}");
 
-                    test.Fail("Test failed").AddScreenCaptureFromPath(filePath);
+                    _test.Fail("Test failed").AddScreenCaptureFromPath(filePath);
                 }
                 catch (Exception ex)
                 {
@@ -95,19 +95,19 @@ namespace MobileUITests.Tests
             }
             else if (status == TestStatus.Passed)
             {
-                test.Pass("Test passed");
+                _test.Pass("Test passed");
             }
         }
 
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
-            extent.Flush();
+            _extent.Flush();
 
-            if (driver != null)
+            if (_driver != null)
             {
-                driver.Quit();
-                driver.Dispose();
+                _driver.Quit();
+                _driver.Dispose();
             }
         }
 

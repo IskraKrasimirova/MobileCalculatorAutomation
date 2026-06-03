@@ -7,15 +7,15 @@
         [Category("Regression")]
         public void EvaluateMixedExpression(string testedCase, string[] sequence, string expectedResult)
         {
-            calculatorPage.TapClear();
+            _calculatorPage.TapClear();
 
             foreach (var element in sequence)
             {
                 ProcessElement(element);
             }
 
-            calculatorPage.TapEquals();
-            var result = calculatorPage.GetCalculationResult();
+            _calculatorPage.TapEquals();
+            var result = _calculatorPage.GetCalculationResult();
 
             Assert.That(result, Is.EqualTo(expectedResult), testedCase);
         }
@@ -175,21 +175,21 @@
         [Category("Regression")]
         public void EvaluateExpressionWithParentheses(string testedCase, string[] sequence, string expectedResult)
         {
-            calculatorPage.TapClear();
+            _calculatorPage.TapClear();
 
             foreach (var element in sequence)
             {
                 if (element == "(" || element == ")")
                 {
-                    calculatorPage.TapParenthesis();
+                    _calculatorPage.TapParenthesis();
                     continue;
                 }
 
                 ProcessElement(element);
             }
 
-            calculatorPage.TapEquals();
-            var result = calculatorPage.GetCalculationResult();
+            _calculatorPage.TapEquals();
+            var result = _calculatorPage.GetCalculationResult();
 
             Assert.That(result, Is.EqualTo(expectedResult), testedCase);
         }
@@ -253,19 +253,19 @@
             switch (element)
             {
                 case "+":
-                    calculatorPage.TapPlus();
+                    _calculatorPage.TapPlus();
                     break;
                 case "-":
-                    calculatorPage.TapMinus();
+                    _calculatorPage.TapMinus();
                     break;
                 case "*":
-                    calculatorPage.TapMultiply();
+                    _calculatorPage.TapMultiply();
                     break;
                 case "/":
-                    calculatorPage.TapDivide();
+                    _calculatorPage.TapDivide();
                     break;
                 default:
-                    calculatorPage.EnterNumber(element);
+                    _calculatorPage.EnterNumber(element);
                     break;
             }
         }

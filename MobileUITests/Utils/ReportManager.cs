@@ -1,5 +1,6 @@
 ﻿using AventStack.ExtentReports;
 using AventStack.ExtentReports.Reporter;
+using MobileUITests.Models;
 
 namespace MobileUITests.Utils
 {
@@ -7,7 +8,7 @@ namespace MobileUITests.Utils
     {
         private static ExtentReports? _extent;
 
-        public static ExtentReports GetReporter()
+        public static ExtentReports GetReporter(AppiumSettings settings)
         {
             if (_extent == null)
             {
@@ -19,6 +20,11 @@ namespace MobileUITests.Utils
 
                 _extent = new ExtentReports();
                 _extent.AttachReporter(spark);
+
+                _extent.AddSystemInfo("Device Name", settings.DeviceName);
+                _extent.AddSystemInfo("Platform Version", settings.PlatformVersion);
+                _extent.AddSystemInfo("App Package", settings.AppPackage);
+                _extent.AddSystemInfo("Automation", settings.AutomationName);
             }
 
             return _extent;

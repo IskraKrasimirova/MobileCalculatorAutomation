@@ -7,12 +7,12 @@
         [Category("Smoke")]
         public void MultiplicationOfTwoNumbers(string testedCase, string number1, string number2, string expectedResult)
         {
-            calculatorPage.EnterNumber(number1);
-            calculatorPage.TapMultiply();
-            calculatorPage.EnterNumber(number2);
-            calculatorPage.TapEquals();
+            _calculatorPage.EnterNumber(number1);
+            _calculatorPage.TapMultiply();
+            _calculatorPage.EnterNumber(number2);
+            _calculatorPage.TapEquals();
 
-            var result = calculatorPage.GetCalculationResult();
+            var result = _calculatorPage.GetCalculationResult();
 
             Assert.That(result, Is.EqualTo(expectedResult), testedCase);
         }
@@ -51,7 +51,7 @@
             // Case 1: Empty array
             if (numbers.Length == 0)
             {
-                var result = calculatorPage.GetCalculationResult();
+                var result = _calculatorPage.GetCalculationResult();
                 Assert.That(result, Is.EqualTo(expectedResult), testedCase);
                 return;
             }
@@ -59,24 +59,24 @@
             // Case 2: Single element
             if (numbers.Length == 1)
             {
-                calculatorPage.EnterNumber(numbers[0]);
-                calculatorPage.TapEquals();
-                var result = calculatorPage.GetCalculationResult();
+                _calculatorPage.EnterNumber(numbers[0]);
+                _calculatorPage.TapEquals();
+                var result = _calculatorPage.GetCalculationResult();
                 Assert.That(result, Is.EqualTo(expectedResult), testedCase);
                 return;
             }
 
             // Case 3: Normal multi-multiplication logic
-            calculatorPage.EnterNumber(numbers[0]);
+            _calculatorPage.EnterNumber(numbers[0]);
 
             for (int i = 1; i < numbers.Length; i++)
             {
-                calculatorPage.TapMultiply();
-                calculatorPage.EnterNumber(numbers[i]);
+                _calculatorPage.TapMultiply();
+                _calculatorPage.EnterNumber(numbers[i]);
             }
 
-            calculatorPage.TapEquals();
-            var finalResult = calculatorPage.GetCalculationResult();
+            _calculatorPage.TapEquals();
+            var finalResult = _calculatorPage.GetCalculationResult();
 
             Assert.That(finalResult, Is.EqualTo(expectedResult), testedCase);
         }
@@ -161,11 +161,11 @@
         [Ignore("Not supported")]
         public void RepeatedMultiplyWithoutSecondOperand()
         {
-            calculatorPage.EnterNumber("5");
-            calculatorPage.TapMultiply();
-            calculatorPage.TapEquals();
+            _calculatorPage.EnterNumber("5");
+            _calculatorPage.TapMultiply();
+            _calculatorPage.TapEquals();
 
-            var result = calculatorPage.GetCalculationResult();
+            var result = _calculatorPage.GetCalculationResult();
 
             Assert.That(result, Is.EqualTo("25"), "5 × = should repeat the operation and return 25");
         }
@@ -176,22 +176,22 @@
         public void RepeatedMultiplicationSeveralTimes()
         {
             // Start with 2 ×
-            calculatorPage.EnterNumber("2");
-            calculatorPage.TapMultiply();
+            _calculatorPage.EnterNumber("2");
+            _calculatorPage.TapMultiply();
 
             var expectedValues = new[] { "4", "16", "256", "65536", "4294967296", "1.8446744073709555e+19" };
 
             for (int i = 0; i < expectedValues.Length; i++)
             {
-                calculatorPage.TapEquals();
-                var result = calculatorPage.GetCalculationResult();
+                _calculatorPage.TapEquals();
+                var result = _calculatorPage.GetCalculationResult();
 
                 Assert.That(result, Is.EqualTo(expectedValues[i]), $"Expected {expectedValues[i]} but got {result}");
 
                 // Add "*" only if this is NOT the last iteration
                 if (i < expectedValues.Length - 1)
                 {
-                    calculatorPage.TapMultiply();
+                    _calculatorPage.TapMultiply();
                 }
             }
         }
