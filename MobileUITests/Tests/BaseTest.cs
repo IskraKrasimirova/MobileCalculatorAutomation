@@ -49,6 +49,7 @@ namespace MobileUITests.Tests
             foreach (var category in categories)
             {
                 test.AssignCategory(category.ToString());
+                test.AssignAuthor(category.ToString());
             }
 
             try
